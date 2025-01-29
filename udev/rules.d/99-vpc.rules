@@ -1,0 +1,2 @@
+# Virpil Control devices
+SUBSYSTEM=="usb", ATTRS{idVendor}=="3344", TAG+="uaccess", GROUP:="input"
