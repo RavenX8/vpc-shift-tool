@@ -194,7 +194,7 @@ fn draw_sources_section(
             // Pass mutable borrow of state_enabled part of source_config
             draw_status_bits(
                 ui,
-                "Shift:",
+                "   Shift:",
                 state_val,
                 &mut source_config.state_enabled,
                 vid,
@@ -312,7 +312,7 @@ fn draw_receivers_section(
             };
             draw_status_bits(
                 ui,
-                "Shift:",
+                "   Shift:",
                 state_val,
                 &mut receiver_config.state_enabled, // Pass mut borrow
                 vid,
@@ -549,6 +549,11 @@ fn draw_control_buttons(
     //         log::info!("Configuration saved manually.");
     //     }
     // }
+
+    if ui.add_enabled(!thread_running, egui::Button::new("Refresh Devices")).clicked() {
+        log::info!("Refreshing device list manually.");
+        app.refresh_devices();
+    }
 
     if ui.button("About").clicked() {
         app.state = State::About;

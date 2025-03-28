@@ -1,5 +1,5 @@
 use hidapi::{DeviceInfo, HidApi, HidError};
-use log::{error, info, warn}; // Use log crate
+use log::{error, info, warn, debug, trace}; // Use log crate
 use serde::{Deserialize, Serialize};
 use std::rc::Rc; // Keep Rc for potential sharing within UI if needed
 
@@ -98,7 +98,7 @@ pub(crate) fn find_device_index_for_saved(
 impl crate::ShiftTool {
     /// Refreshes the internal list of available HID devices.
     pub(crate) fn refresh_devices(&mut self) {
-        info!("Refreshing device list...");
+        trace!("Refreshing device list...");
         match HidApi::new() {
             Ok(hidapi) => {
                 let mut current_devices: Vec<VpcDevice> = Vec::new();
@@ -126,7 +126,7 @@ impl crate::ShiftTool {
                                 if crate::util::is_supported(
                                     vpc_device.firmware.to_string(),
                                 ) {
-                                    info!("Found supported device: {}", vpc_device);
+                                    debug!("Found supported device: {}", vpc_device);
                                     current_devices.push(vpc_device);
                                 } else {
                                     warn!(
@@ -153,7 +153,7 @@ impl crate::ShiftTool {
 
                 // Update the app's device list
                 self.device_list = current_devices;
-                info!(
+                debug!(
                     "Device list refresh complete. Found {} unique devices.",
                     self.device_list.len() - 1 // Exclude default entry
                 );
@@ -200,28 +200,25 @@ impl crate::ShiftTool {
     /// Checks if saved source/receiver devices still exist in the refreshed list.
     /// Resets the config entry to default if the device is gone.
     fn validate_selected_devices(&mut self) {
-        let mut changed = false;
         for i in 0..self.config.data.sources.len() {
-            let idx = self.find_source_device_index(i);
+            let idx = self.find_device_index_for_saved(&self.config.data.sources[i]);
+            // Check if device *was* configured but is *not* found (idx 0 is default/not found)
             if idx == 0 && (self.config.data.sources[i].vendor_id != 0 || self.config.data.sources[i].product_id != 0) {
-                warn!("Previously selected source device {} not found after refresh. Resetting.", i + 1);
-                self.config.data.sources[i] = SavedDevice::default();
-                changed = true;
+                // Log that the configured device is currently missing, but DO NOT reset config
+                warn!(
+                    "validate_selected_devices: Configured source device {} (VID={:04X}, PID={:04X}) not found in refreshed list. Keeping configuration.",
+                    i + 1, self.config.data.sources[i].vendor_id, self.config.data.sources[i].product_id
+                );
             }
         }
         for i in 0..self.config.data.receivers.len() {
-            let idx = self.find_receiver_device_index(i);
+            let idx = self.find_device_index_for_saved(&self.config.data.receivers[i]);
             if idx == 0 && (self.config.data.receivers[i].vendor_id != 0 || self.config.data.receivers[i].product_id != 0) {
-                warn!("Previously selected receiver device {} not found after refresh. Resetting.", i + 1);
-                self.config.data.receivers[i] = SavedDevice::default();
-                changed = true;
+                warn!(
+                    "validate_selected_devices: Configured receiver device {} (VID={:04X}, PID={:04X}) not found in refreshed list. Keeping configuration.",
+                    i + 1, self.config.data.receivers[i].vendor_id, self.config.data.receivers[i].product_id
+                );
             }
-        }
-        if changed {
-            // Optionally save the config immediately after validation changes
-            // if let Err(e) = self.config.save() {
-            //     error!("Failed to save config after device validation: {}", e);
-            // }
         }
     }
 }

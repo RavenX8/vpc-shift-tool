@@ -264,11 +264,8 @@ fn run_hid_worker_loop(hidapi: HidApi, data: WorkerData) {
         }
 
         // --- Write to Receiver Devices ---
-        // We need to determine the correct length to send. Assuming report 4 is always ID + 2 bytes.
-        const bytes_to_send: usize = 19; // Report ID (1) + Data (2)
-
-        let zero_buffer: [u8; bytes_to_send] = {
-            let mut buf = [0u8; bytes_to_send];
+        let zero_buffer: [u8; REPORT_BUFFER_SIZE] = {
+            let mut buf = [0u8; REPORT_BUFFER_SIZE];
             buf[0] = FEATURE_REPORT_ID; // Set Report ID 4
             // All other bytes (1-18) remain 0 for the zero state
             buf
@@ -322,7 +319,7 @@ fn run_hid_worker_loop(hidapi: HidApi, data: WorkerData) {
 
 
                         // Send the potentially filtered feature report
-                        match device.send_feature_report(&filtered_write_buffer[0..bytes_to_send]) {
+                        match device.send_feature_report(&filtered_write_buffer[0..REPORT_BUFFER_SIZE]) {
                             Ok(_) => {
                                 log::debug!("Worker: Send to receiver[{}] successful.", i);
                                 // Successfully sent. Update UI state for this receiver.
@@ -392,8 +389,13 @@ fn run_hid_worker_loop(hidapi: HidApi, data: WorkerData) {
 
     // --- Cleanup before thread exit ---
     log::info!("Worker loop finished. Performing cleanup...");
-    // Optionally send a 'zero' report to all devices on exit
-    let cleanup_buffer: [u8; 3] = [FEATURE_REPORT_ID, 0, 0];
+    // Send a 'zero' report to all devices on exit
+    let cleanup_buffer: [u8; REPORT_BUFFER_SIZE] = {
+        let mut buf = [0u8; REPORT_BUFFER_SIZE];
+        buf[0] = FEATURE_REPORT_ID; // Set Report ID 4
+        // All other bytes (1-18) remain 0 for the zero state
+        buf
+    };
     for device_opt in source_devices.iter_mut().chain(receiver_devices.iter_mut()) {
         if let Some(device) = device_opt {
             if let Err(e) = device.send_feature_report(&cleanup_buffer) {
