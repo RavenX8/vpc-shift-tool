@@ -404,21 +404,6 @@ fn run_hid_worker_loop(hidapi: HidApi, data: WorkerData) {
                                 // If send fails later, reopen will be attempted then.
                             }
                         }
-
-                        // --- Read current state (Optional Merge) ---
-                        read_buffer[0] = receiver_format.report_id; // Use receiver format ID
-                        let mut receiver_current_state: u16 = 0;
-                        log::trace!("Worker: Reading current state from receiver[{}] before merge using format '{}'.", i, receiver_format.name);
-                        match device.get_feature_report(&mut read_buffer) {
-                            Ok(bytes_read) => {
-                                // --- Use correct unpack_state function name ---
-                                if let Some(current_state) = receiver_format.unpack_state(&read_buffer[0..bytes_read]) {
-                                    // --- End change ---
-                                    receiver_current_state = current_state;
-                                } else { /* warn unpack failed */ }
-                            }
-                            Err(e_read) => { /* warn read failed */ }
-                        }
                         state_to_send |= receiver_current_state; // Merge
                         // --- End Read current state ---
 

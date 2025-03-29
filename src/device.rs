@@ -1,7 +1,7 @@
 use hidapi::{DeviceInfo, HidApi, HidError};
 use log::{error, info, warn, debug, trace}; // Use log crate
 use serde::{Deserialize, Serialize};
-use std::rc::Rc; // Keep Rc for potential sharing within UI if needed
+use std::rc::Rc;
 
 // Represents a discovered VPC device
 #[derive(Debug, PartialEq, PartialOrd, Ord, Eq, Hash, Clone)]
@@ -73,7 +73,6 @@ impl Default for SavedDevice {
 
 /// Finds the index in the `device_list` corresponding to the saved device data.
 /// Returns 0 (default "No Connection") if not found or if saved_device is invalid.
-// Make this function standalone or static, not requiring &self
 pub(crate) fn find_device_index_for_saved(
     device_list: &[VpcDevice], // Pass device list explicitly
     saved_device: &SavedDevice,
@@ -94,7 +93,6 @@ pub(crate) fn find_device_index_for_saved(
 
 // --- Device Management Functions ---
 
-// Now part of ShiftTool impl block
 impl crate::ShiftTool {
     /// Refreshes the internal list of available HID devices.
     pub(crate) fn refresh_devices(&mut self) {

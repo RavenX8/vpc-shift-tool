@@ -172,10 +172,9 @@ impl eframe::App for ShiftTool {
     fn update(&mut self, ctx: &egui::Context, _frame: &mut eframe::Frame) {
         log::debug!("Update Called.");
         // Request repaint ensures GUI updates even if worker is slow
-        ctx.request_repaint_after(Duration::from_millis(50)); // e.g., 10 FPS target
+        ctx.request_repaint_after(Duration::from_millis(50));
 
         egui::CentralPanel::default().show(ctx, |ui| {
-            // Use show_inside_add to handle resize correctly
             egui::Resize::default()
                 .default_width(INITIAL_WIDTH)
                 .default_height(INITIAL_HEIGHT)
