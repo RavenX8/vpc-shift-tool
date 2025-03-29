@@ -15,6 +15,7 @@ use eframe::{egui, glow};
 use fast_config::Config;
 use std::sync::{Arc, Condvar, Mutex};
 use std::time::Duration;
+use clap::Parser;
 
 // Internal Module Imports
 use config::{ConfigData}; // Import specific items
@@ -29,6 +30,13 @@ const INITIAL_HEIGHT: f32 = 260.0;
 // Type aliases for shared state can make signatures cleaner
 pub type SharedStateFlag = Arc<(Mutex<bool>, Condvar)>;
 pub type SharedDeviceState = Arc<Mutex<u16>>; // Assuming Condvar isn't strictly needed here
+
+#[derive(Parser, Debug)]
+#[command(version, about, long_about = None)]
+struct Args {
+    #[arg(short, long, default_value_t = false)]
+    skip_firmware: bool,
+}
 
 // The main application struct
 pub struct ShiftTool {
@@ -205,15 +213,7 @@ fn main() -> eframe::Result<()> {
     env_logger::init();
 
     // --- Command Line Argument Parsing ---
-    // If you need args, keep this, otherwise remove clap dependency.
-    use clap::Parser;
-    #[derive(Parser, Debug)]
-    #[command(version, about, long_about = None)]
-    struct Args {
-        #[arg(short, long, default_value_t = false)]
-        skip_firmware: bool,
-    }
-    let _args = Args::parse();
+    // let _args = Args::parse();
     // --- End Argument Parsing ---
 
     log::info!("Starting {}", PROGRAM_TITLE);

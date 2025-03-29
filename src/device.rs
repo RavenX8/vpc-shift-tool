@@ -192,7 +192,7 @@ impl crate::ShiftTool {
             .position(|d| {
                 d.vendor_id == saved_device.vendor_id
                     && d.product_id == saved_device.product_id
-                    && d.serial_number == saved_device.serial_number
+                    // && d.serial_number == saved_device.serial_number
             })
             .unwrap_or(0) // Default to index 0 ("No Connection") if not found
     }
