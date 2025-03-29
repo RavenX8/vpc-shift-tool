@@ -125,15 +125,7 @@ impl ReportFormat {
 }
 
 const FORMAT_ORIGINAL: ReportFormat = ReportFormat {
-    name: "Original (Size 3)", // Add name
-    report_id: FEATURE_REPORT_ID_SHIFT,
-    total_size: 3,
-    high_byte_idx: 1,
-    low_byte_idx: 2,
-};
-
-const FORMAT_THROTTLE: ReportFormat = ReportFormat {
-    name: "Original Throttle (Size 2)", // Add name
+    name: "Original (Size 2)", // Add name
     report_id: FEATURE_REPORT_ID_SHIFT,
     total_size: 2,
     high_byte_idx: usize::MAX,
@@ -156,26 +148,7 @@ struct FormatRule {
 }
 
 const FORMAT_RULES: &[FormatRule] = &[
-    // Rule 1: Check for Original format based on date for Throttles
-    FormatRule {
-        matches: |name, fw| {
-            if name.contains("Throttle") == false {
-                return false
-            }
-            const THRESHOLD: &str = "2024-12-26";
-            let date_str = fw.split_whitespace().last().unwrap_or("");
-            if date_str.len() == 8 {
-                if let Ok(fw_date) = NaiveDate::parse_from_str(date_str, "%Y%m%d") {
-                    if let Ok(t_date) = NaiveDate::parse_from_str(THRESHOLD, "%Y-%m-%d") {
-                        return fw_date < t_date; // Return true if older
-                    }
-                }
-            }
-            false // Don't match if parsing fails or format wrong
-        },
-        format: FORMAT_THROTTLE,
-    },
-    // Rule 2: Check for Original format based on date
+    // Rule 1: Check for Original format based on date
     FormatRule {
         matches: |name, fw| {
             const THRESHOLD: &str = "2024-12-26";
