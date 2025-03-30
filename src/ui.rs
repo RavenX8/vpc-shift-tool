@@ -350,7 +350,7 @@ fn device_selector_combo(
     };
 
     ui.add_enabled_ui(!disabled, |ui| {
-        egui::ComboBox::from_id_source(id_source)
+        egui::ComboBox::from_id_salt(id_source)
             .width(300.0) // Adjust width as needed
             .selected_text(selected_text)
             .show_ui(ui, |ui| {
@@ -463,34 +463,6 @@ fn draw_status_bits(
         }
     });
 }
-
-/// Draws the ONLINE/OFFLINE status indicator.
-fn draw_online_status(
-    ui: &mut Ui,
-    saved_device_config: &crate::device::SavedDevice, // Pass the config for this slot
-    thread_running: bool,
-) {
-    // Infer status: Online if thread is running AND device is configured (VID/PID != 0)
-    let is_configured = saved_device_config.vendor_id != 0 && saved_device_config.product_id != 0;
-
-    // Determine status text and color
-    let (text, color) = if thread_running && is_configured {
-        // We assume the worker *tries* to talk to configured devices.
-        // A more advanced check could involve reading another shared state
-        // updated by the worker indicating recent success/failure for this device.
-        ("ONLINE", Color32::GREEN)
-    } else if !is_configured {
-        ("UNCONFIGURED", Color32::YELLOW) // Show if slot is empty
-    } else { // Thread not running or device not configured
-        ("OFFLINE", Color32::GRAY)
-    };
-
-    // Use selectable_label for consistent look, but make it non-interactive
-    // Set 'selected' argument to false as it's just a status display
-    ui.selectable_label(false, egui::RichText::new(text).color(color));
-}
-
-
 
 /// Draws the control buttons in the right column.
 fn draw_control_buttons(

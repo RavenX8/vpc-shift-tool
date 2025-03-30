@@ -82,7 +82,7 @@ impl Default for ShiftTool {
             device_list: vec![],
             source_states: vec![],
             receiver_states: vec![],
-            shift_state: Arc::new((Mutex::new(0))), // Keep Condvar if needed for shift_state?
+            shift_state: Arc::new(Mutex::new(0)), // Keep Condvar if needed for shift_state?
             thread_state: Arc::new((Mutex::new(false), Condvar::new())),
             config,
         }
@@ -115,13 +115,13 @@ impl ShiftTool {
     // Helper to add state tracking for a new source
     fn add_source_state(&mut self) {
         self.source_states
-            .push(Arc::new((Mutex::new(0))));
+            .push(Arc::new(Mutex::new(0)));
     }
 
     // Helper to add state tracking for a new receiver
     fn add_receiver_state(&mut self) {
         self.receiver_states
-            .push(Arc::new((Mutex::new(0))));
+            .push(Arc::new(Mutex::new(0)));
     }
 
     // Helper to get thread status (could be in ui.rs or main.rs)

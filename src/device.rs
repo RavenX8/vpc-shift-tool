@@ -166,20 +166,6 @@ impl crate::ShiftTool {
         }
     }
 
-    /// Finds the index in the `device_list` corresponding to the saved receiver config.
-    pub(crate) fn find_receiver_device_index(&self, receiver_config_index: usize) -> usize {
-        self.find_device_index_for_saved(
-            &self.config.data.receivers[receiver_config_index]
-        )
-    }
-
-    /// Finds the index in the `device_list` corresponding to the saved source config.
-    pub(crate) fn find_source_device_index(&self, source_config_index: usize) -> usize {
-        self.find_device_index_for_saved(
-            &self.config.data.sources[source_config_index]
-        )
-    }
-
     /// Generic helper to find a device index based on SavedDevice data.
     fn find_device_index_for_saved(&self, saved_device: &SavedDevice) -> usize {
         if saved_device.vendor_id == 0 && saved_device.product_id == 0 {

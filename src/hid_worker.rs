@@ -1,7 +1,7 @@
 use crate::config::{ModifiersArray};
 use crate::device::SavedDevice;
 use crate::{SharedDeviceState, SharedStateFlag}; // Import shared types
-use crate::util::{self, merge_u8_into_u16, read_bit, set_bit, ReportFormat, MAX_REPORT_SIZE};
+use crate::util::{self, read_bit, ReportFormat, MAX_REPORT_SIZE};
 use log::{debug, error, info, trace, warn};
 use hidapi::{HidApi, HidDevice, HidError};
 use std::{
@@ -259,14 +259,14 @@ fn run_hid_worker_loop(hidapi: HidApi, data: WorkerData) {
     let mut read_buffer = [0u8; MAX_REPORT_SIZE];
     let mut write_buffer = [0u8; MAX_REPORT_SIZE]; // Buffer for calculated output
 
-    let &(ref run_lock, ref run_cvar) = &*data.run_state;
+    let &(ref run_lock, ref _run_cvar) = &*data.run_state;
 
     loop {
         // --- Check Run State ---
         let should_run = { // Scope for mutex guard
             match run_lock.lock() {
                 Ok(guard) => *guard,
-                Err(poisoned) => {
+                Err(_poisoned) => {
                     error!("Run state mutex poisoned in worker loop!");
                     false
                 }
@@ -523,7 +523,7 @@ fn run_hid_worker_loop(hidapi: HidApi, data: WorkerData) {
                         if let Ok(mut guard) = shared_state.lock() { *guard = 0; }
                     }
                 }
-                Err(e_actual) => {
+                Err(_e_actual) => {
                     if let Some(shared_state) = data.receiver_states_shared.get(i) {
                         if let Ok(mut guard) = shared_state.lock() { *guard = 0; }
                     }
