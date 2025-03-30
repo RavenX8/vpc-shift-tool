@@ -1,5 +1,5 @@
-use hidapi::{DeviceInfo, HidApi, HidError};
-use log::{error, info, warn, debug, trace}; // Use log crate
+use hidapi::{DeviceInfo, HidApi};
+use log::{error, warn, debug, trace}; // Use log crate
 use serde::{Deserialize, Serialize};
 use std::rc::Rc;
 

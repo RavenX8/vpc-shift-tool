@@ -19,7 +19,7 @@ use clap::Parser;
 
 // Internal Module Imports
 use config::{ConfigData}; // Import specific items
-use device::{VpcDevice, SavedDevice};
+use device::{VpcDevice};
 use state::State; // Import the State enum
 
 // Constants

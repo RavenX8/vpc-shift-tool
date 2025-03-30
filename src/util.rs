@@ -1,6 +1,6 @@
 use clap::Parser;
 use chrono::NaiveDate;
-use log::{error, info, trace, warn};
+use log::{error, trace, warn};
 
 pub(crate) const FEATURE_REPORT_ID_SHIFT: u8 = 4;
 
@@ -150,7 +150,7 @@ struct FormatRule {
 const FORMAT_RULES: &[FormatRule] = &[
     // Rule 1: Check for Original format based on date
     FormatRule {
-        matches: |name, fw| {
+        matches: |_name, fw| {
             const THRESHOLD: &str = "2024-12-26";
             let date_str = fw.split_whitespace().last().unwrap_or("");
             if date_str.len() == 8 {

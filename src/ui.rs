@@ -1,7 +1,7 @@
 use crate::about;
 use crate::config::{ShiftModifiers};
 use crate::device::VpcDevice; // Assuming VpcDevice has Display impl
-use crate::{ShiftTool, INITIAL_HEIGHT, INITIAL_WIDTH, PROGRAM_TITLE}; // Import main struct
+use crate::{ShiftTool, INITIAL_WIDTH, PROGRAM_TITLE}; // Import main struct
 use crate::state::State;
 use crate::util::read_bit; // Import utility
 use eframe::egui::{self, Color32, Context, ScrollArea, Ui};

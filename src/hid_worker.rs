@@ -1,11 +1,10 @@
 use crate::config::{ModifiersArray};
 use crate::device::SavedDevice;
 use crate::{SharedDeviceState, SharedStateFlag}; // Import shared types
-use crate::util::{self, read_bit, ReportFormat, MAX_REPORT_SIZE};
-use log::{debug, error, info, trace, warn};
-use hidapi::{HidApi, HidDevice, HidError};
+use crate::util::{self, ReportFormat, MAX_REPORT_SIZE};
+use log::{error, info, trace, warn};
+use hidapi::{HidApi, HidDevice};
 use std::{
-    sync::{Arc, Condvar, Mutex},
     thread,
     time::Duration,
 };
