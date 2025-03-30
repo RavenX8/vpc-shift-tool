@@ -117,6 +117,7 @@ pub(crate) fn draw_running_state(
     }
 
     ui.columns(2, |columns| {
+        columns[0].set_width(612 as f32);
         ScrollArea::vertical()
             .auto_shrink([false, false])
             .show(&mut columns[0], |ui| {
@@ -130,6 +131,7 @@ pub(crate) fn draw_running_state(
                 });
             });
 
+        columns[1].set_width(128 as f32);
         columns[1].vertical(|ui| {
             draw_control_buttons(app, ui, ctx, thread_running);
         });
