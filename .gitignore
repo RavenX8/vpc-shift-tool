@@ -4,7 +4,7 @@
 
 ### C++ template
 # Prerequisites
-*.d
+#*.d
 
 # Compiled Object files
 *.slo
