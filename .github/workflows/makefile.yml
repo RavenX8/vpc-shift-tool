@@ -21,7 +21,7 @@ jobs:
             bin: shift_tool
             name: shift_tool-Linux-x86_64.tar.gz
             command: build
-            dependencies_command: sudo apt install -y libudev-dev curl
+            dependencies_command: sudo apt install -y libudev-dev curl libhidapi-dev
 
           - release_for: Windows-x86_64
             os: windows-latest
